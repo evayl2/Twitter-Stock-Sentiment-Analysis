@@ -40,7 +40,8 @@ def get_tweets_from_user(results):
     id_list = [tweet.id for tweet in results]
     data_set = pd.DataFrame(id_list, columns=["id"])
     data_set["text"] = [tweet.text for tweet in results]
-    data_set["User"] = [tweet.entities.get('screen_name') for tweet in results]
+    data_set["User"] = [tweet.user.screen_name for tweet in results]
+
 
     filename = 'scraped_user_tweets.csv'
     # we will save our database as a CSV file.
