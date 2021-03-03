@@ -50,6 +50,7 @@ def get_tweets_from_user(results):
     data_set = pd.DataFrame(id_list, columns=["id"])
     data_set["text"] = [tweet.text for tweet in results]
     data_set["User"] = [tweet.user.screen_name for tweet in results]
+    data_set["date"] = [tweet.created_at for tweet in results]
 
 
     filename = 'tweet_data/scraped_user_tweets.csv'
@@ -90,14 +91,17 @@ data["text"] = np.vectorize(remove_pattern)(data['text'], "@[\w]*")
 data["text"] = data['text'].str.replace("[^a-zA-Z#]", " ")
 data["text"]= data["text"].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
-tokenized_tweet = data["text"] .apply(lambda x: x.split())
-stemmer = PorterStemmer()
-tokenized_tweet = tokenized_tweet.apply(lambda x: [stemmer.stem(i) for i in x]) # stemming
+nan_value = float("NaN")
+data.replace("", nan_value, inplace=True)
+data.dropna(subset = ["text"], inplace=True)
 
-for i in range(len(tokenized_tweet)):
-    tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
+# tokenized_tweet = data["text"] .apply(lambda x: x.split())
+# stemmer = PorterStemmer()
+# tokenized_tweet = tokenized_tweet.apply(lambda x: [stemmer.stem(i) for i in x]) # stemming
 
-data['text'] = tokenized_tweet
+# for i in range(len(tokenized_tweet)):
+#     tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
+# data['text'] = tokenized_tweet
 data.to_csv(index=False, path_or_buf="tweet_data/cleaned_user_tweet.csv")
 
 all_words = ' '.join([text for text in data['text']])
