@@ -16,18 +16,28 @@ from wordcloud import WordCloud
 
 # Store tweets data in a dataframe
 def tweets_df(results):
+    # saved_tweets = pd.read_csv("tweet_data/seven_day_tweets.csv")
+    # id_list = [tweet.id for tweet in results]
+    # data_set = pd.DataFrame(id_list, columns=["id"])
+    # data_set["text"] = [tweet.text for tweet in results]
+    # data_set["Hashtags"] = [tweet.entities['hashtags'] for tweet in results]
+    # data_set["date"] = [tweet.created_at for tweet in results]
+    # data_set["follower_count"] = [tweet.user.followers_count for tweet in results]
+    # saved_tweets = saved_tweets.append(data_set)
+    # filename = "tweet_data/hashtag_scraped_tweets.csv"
+    # saved_tweets.to_csv(filename)
+    # return saved_tweets
+
     id_list = [tweet.id for tweet in results]
     data_set = pd.DataFrame(id_list, columns=["id"])
     data_set["text"] = [tweet.text for tweet in results]
     data_set["Hashtags"] = [tweet.entities['hashtags'] for tweet in results]
     data_set["date"] = [tweet.created_at for tweet in results]
-    # data_set["date"] = [str(tweet.created_at).split()[0] for tweet in results]
-
-    filename = 'tweet_data/hashtag_scraped_tweets.csv'
-    # we will save our database as a CSV file.
+    data_set["follower_count"] = [tweet.user.followers_count for tweet in results]
+    # saved_tweets = saved_tweets.append(data_set)
+    filename = "tweet_data/seven_day_tweets.csv"
     data_set.to_csv(filename)
     return data_set
-
 
 if __name__ == '__main__':
 
@@ -40,7 +50,7 @@ if __name__ == '__main__':
 
     # Extracting Tweets
     results = []
-    for tweet in tweepy.Cursor(api.search, q=words).items(100):
+    for tweet in tweepy.Cursor(api.search, q=words, lang='en').items(1000):
         results.append(tweet)
 
     data_set = tweets_df(results)
@@ -85,33 +95,16 @@ def remove_pattern(input_txt, pattern):
 
     return input_txt
 
-data = pd.read_csv('tweet_data/hashtag_scraped_tweets.csv')
+data = pd.read_csv('tweet_data/seven_day_tweets.csv')
 urls = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
 data["text"] = np.vectorize(remove_pattern)(data['text'], urls)
 data["text"] = np.vectorize(remove_pattern)(data['text'], "@[\w]*")
 data["text"] = data['text'].str.replace("[^a-zA-Z#]", " ")
-data["text"]= data["text"].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
+data["text"] = data["text"].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 
 nan_value = float("NaN")
 data.replace("", nan_value, inplace=True)
 data.dropna(subset = ["text"], inplace=True)
 
-# tokenized_tweet = data["text"] .apply(lambda x: x.split())
-# stemmer = PorterStemmer()
-# tokenized_tweet = tokenized_tweet.apply(lambda x: [stemmer.stem(i) for i in x]) # stemming
+data.to_csv(index=False, path_or_buf="tweet_data/cleaned_hashtag_tweet.csv")
 
-# for i in range(len(tokenized_tweet)):
-#     tokenized_tweet[i] = ' '.join(tokenized_tweet[i])
-# data['text'] = tokenized_tweet
-data.to_csv(index=False, path_or_buf="tweet_data/cleaned_user_tweet.csv")
-
-all_words = ' '.join([text for text in data['text']])
-
-
-wordcloud = WordCloud(width=800, height=500, random_state=21, max_font_size=110).generate(all_words)
-
-plt.figure(figsize=(10, 7))
-plt.imshow(wordcloud, interpolation="bilinear")
-plt.axis('off')
-# plt.show()
-plt.savefig("tweet_data/elonmusk_tweets.png", bbox_inches='tight')

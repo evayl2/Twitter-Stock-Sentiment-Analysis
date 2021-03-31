@@ -4,36 +4,103 @@ import matplotlib.pyplot as plt
 import string
 import nltk
 from stockjson import *
+import datetime
 
-cleaned_tweets = pd.read_csv(r"tweet_data\cleaned_user_tweet.csv")
+def Weigh_Tweets(clean_tweets):
+    seven_day_sentiment = pd.read_csv("weighed_tweet_scores.csv")
+    weighed_tweet_scores = pd.DataFrame(columns=['Date','Average Sentiment'])
+    morning_total_followers = 0
+    afternoon_total_followers = 0
+    time1 = datetime.time(12, 0, 0)
+    times = clean_tweets['time'].dt.time.tolist()
+    followers = clean_tweets['follower_count'].values.tolist()
+    compound_scores = clean_tweets['compound'].values.tolist()
+    for i in range(len(times)):
+        if times[i] < time1:
+            morning_total_followers += followers[i]
+        else:
+            afternoon_total_followers += followers[i]
+    total_morning_sentiment = 0
+    total_afternoon_sentiment = 0
+    for i in range(len(times)):
+        if times[i] < time1:
+            total_morning_sentiment += compound_scores[i]*followers[i]
+        else:
+            total_afternoon_sentiment += compound_scores[i]*followers[i]
+    total_morning_sentiment /= morning_total_followers
+    total_afternoon_sentiment /= afternoon_total_followers
+    morning_today = datetime.datetime(2021, 3, 30, 0, 0, 0)
+    afternoon_today = datetime.datetime(2021, 3, 30, 12, 0, 0)
+    today = pd.DataFrame([[morning_today, total_morning_sentiment], [afternoon_today, total_afternoon_sentiment]], columns=['Date','Average Sentiment'])
+    weighed_tweet_scores = weighed_tweet_scores.append(today)
+    seven_day_sentiment = seven_day_sentiment.append(weighed_tweet_scores)
+    return seven_day_sentiment
+
+def Parse_Stock_Prices(stock_prices):
+    seven_day_prices = pd.read_csv("seven_day_prices.csv")
+    time1 = datetime.time(12, 0, 0)
+    times = stock_prices['date'].dt.time.tolist()
+    prices = stock_prices['4. close'].values.tolist()
+    morning_count = 0
+    afternoon_count = 0
+    for i in range(len(times)):
+        if times[i] < time1:
+            morning_count += 1
+        else:
+            afternoon_count += 1
+    morning_price = 0
+    afternoon_price = 0
+
+    for i in range(len(times)):
+        if times[i] < time1:
+            morning_price += prices[i]
+        else:
+            afternoon_price += prices[i]
+    morning_price /= morning_count
+    afternoon_price /= afternoon_count
+    average_prices = pd.DataFrame(columns=['date', 'Average Stock Price'])
+    morning_today = datetime.datetime(2021, 3, 30, 0, 0, 0)
+    afternoon_today = datetime.datetime(2021, 3, 30, 12, 0, 0)
+    today = pd.DataFrame([[morning_today, morning_price], [afternoon_today, afternoon_price]],
+                         columns=['date', 'Average Stock Price'])
+    average_prices = average_prices.append(today)
+    seven_day_prices = seven_day_prices.append(average_prices)
+    return seven_day_prices
+
+cleaned_tweets = pd.read_csv(r"tweet_data\cleaned_hashtag_tweet.csv")
 vader = SentimentIntensityAnalyzer()
 tweet_sentiment = pd.DataFrame()
 tweet_sentiment['tweet'] = cleaned_tweets['text']
 scores = cleaned_tweets['text'].apply(vader.polarity_scores).tolist()
 scores_df = pd.DataFrame(scores)
 # print(scores_df['neu'])
+tweet_sentiment["follower_count"] = cleaned_tweets["follower_count"]
 tweet_sentiment["neg"] = scores_df["neg"]
 tweet_sentiment['neu'] = scores_df['neu']
 tweet_sentiment["pos"] = scores_df["pos"]
 tweet_sentiment["compound"] = scores_df["compound"]
 tweet_sentiment["time"] = cleaned_tweets['date'].astype('datetime64[ns]')
-tweet_sentiment.to_csv(index=False, path_or_buf="tweet_data/user_tweet_sentiment.csv")
+tweet_sentiment.to_csv(index=False, path_or_buf="tweet_data/hashtag_tweet_sentiment.csv")
+weighed_tweets = Weigh_Tweets(tweet_sentiment)
 
-stock_prices = pd.read_csv('google_stocks.csv')
-# stock_date = []
-# for date in (stock_prices['date'].values.tolist()):
-#     stock_date += [str(date).split(" ")[0]]
-# stock_prices['day'] = pd.DataFrame(stock_date)
-stock_name = 'GOOGL'
-# tweet_sentiment.plot(tweet_sentiment['time'], tweet_sentiment['compound'], color='r')
-# stock_plot = stock_prices.plot(stock_prices['date'], stock_prices['4. close'])
-# # stock_plt1 = stock_plot.twinx()
+stock_prices, symbol = plot_single_stock()
+stock_prices.to_csv("google_stocks.csv")
 #
+# stock_prices = pd.read_csv('google_stocks.csv')
+stock_prices['date'] = stock_prices['date'].astype('datetime64[ns]').copy()
+stock_prices = Parse_Stock_Prices(stock_prices)
+stock_name = 'GOOGL'
 
-# print(tweet_sentiment['time'])
-tweet_sentiment.plot('time','compound')
-plt.title('Intraday Times Series for ' + stock_name + ' vs #Google tweet sentiment')
-plt.ylabel('Cost (dollars)')
-plt.xlabel('Time')
+fig,ax = plt.subplots()
+# make a plot
+ax.plot(stock_prices.date, stock_prices['Average Stock Price'], color="red", marker="o")
+# set x-axis label
+ax.set_xlabel("date",fontsize=14)
+# set y-axis label
+ax.set_ylabel("stock price",color="red",fontsize=14)
 
+ax2=ax.twinx()
+# make a plot with different y-axis using second axis object
+ax2.plot(weighed_tweets.Date, weighed_tweets["Average Sentiment"],color="blue",marker="o")
+ax2.set_ylabel("Average Sentiment",color="blue",fontsize=14)
 plt.show()

@@ -51,6 +51,11 @@ def plot_single_stock():
     response = requests.get(API_URL, data)
     response_json = response.json()
     ts = TimeSeries(key='J5S1HUA0WPM10KU8', output_format='pandas')
-    data, meta_data = ts.get_intraday(symbol=symbol, interval='60min', outputsize='compact')
+    data, meta_data = ts.get_intraday(symbol=symbol, outputsize='compact')
     df1 = data['4. close']
+    df1.plot()
+    plt.title('Intraday Times Series for GOOGL')
+    plt.ylabel('Cost (dollars)')
+    plt.xlabel('Time')
+    plt.show()
     return df1, symbol
