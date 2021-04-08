@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 from wordcloud import WordCloud
 
 
+## RUN EVERY DAY
 # Store tweets data in a dataframe
 def tweets_df(results):
     # saved_tweets = pd.read_csv("tweet_data/seven_day_tweets.csv")

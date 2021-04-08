@@ -52,10 +52,14 @@ def plot_single_stock():
     response_json = response.json()
     ts = TimeSeries(key='J5S1HUA0WPM10KU8', output_format='pandas')
     data, meta_data = ts.get_intraday(symbol=symbol, outputsize='compact')
+    data = data.reset_index()
+
     df1 = data['4. close']
-    df1.plot()
-    plt.title('Intraday Times Series for GOOGL')
-    plt.ylabel('Cost (dollars)')
-    plt.xlabel('Time')
-    plt.show()
-    return df1, symbol
+    # df1 = df1.append(data['date'])
+    # df1.plot()
+    # plt.title('Intraday Times Series for GOOGL')
+    # plt.ylabel('Cost (dollars)')
+    # plt.xlabel('Time')
+    # plt.show()
+    return data, symbol
+
