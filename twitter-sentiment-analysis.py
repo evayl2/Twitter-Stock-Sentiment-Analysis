@@ -42,6 +42,11 @@ def Weigh_Tweets(clean_tweets):
         total_morning_sentiment /= morning_total_followers
         today = pd.DataFrame([[morning_today, total_morning_sentiment]],
                              columns=['Date','Average Sentiment'])
+    else:
+        total_afternoon_sentiment /= afternoon_total_followers
+        total_morning_sentiment /= morning_total_followers
+        today = pd.DataFrame([[morning_today, total_morning_sentiment],[afternoon_today, total_afternoon_sentiment]],
+                             columns=['Date', 'Average Sentiment'])
     weighed_tweet_scores = weighed_tweet_scores.append(today)
     seven_day_sentiment = seven_day_sentiment.append(weighed_tweet_scores)
     seven_day_sentiment.to_csv('weighed_tweet_scores.csv')
