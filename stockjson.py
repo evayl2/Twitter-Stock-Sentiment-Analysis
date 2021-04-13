@@ -39,8 +39,8 @@ def plot_multiple_stocks():
     plt.show()
 
 def plot_single_stock():
-    print("Enter stock name to search for")
-    symbol = input()
+    # print("Enter stock name to search for")
+    symbol = "GOOGL"
     API_URL = "https://www.alphavantage.co/query"
     data = {
         "function": "TIME_SERIES_DAILY",

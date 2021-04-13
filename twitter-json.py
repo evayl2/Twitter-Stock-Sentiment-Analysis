@@ -46,8 +46,8 @@ if __name__ == '__main__':
     auth.set_access_token(twitter["ACCESS_TOKEN"], twitter["ACCESS_TOKEN_SECRET"])
     api = tweepy.API(auth, wait_on_rate_limit=True)  # creating the API object
 
-    print("Enter Twitter HashTag to search for")
-    words = "#"+input()
+    # print("Enter Twitter HashTag to search for")
+    words = "#google"
 
     # Extracting Tweets
     results = []
