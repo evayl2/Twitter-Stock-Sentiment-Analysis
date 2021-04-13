@@ -48,6 +48,7 @@ def Weigh_Tweets(clean_tweets):
 
 def Parse_Stock_Prices(stock_prices):
     seven_day_prices = pd.read_csv("seven_day_prices.csv")
+    seven_day_prices.drop(seven_day_prices.columns[[0]], axis=1, inplace=True)
     time1 = datetime.time(12, 0, 0)
     times = stock_prices['date'].dt.time.tolist()
     prices = stock_prices['4. close'].values.tolist()
@@ -76,7 +77,7 @@ def Parse_Stock_Prices(stock_prices):
     afternoon_today = morning.replace(hour=12, minute=0)
     today = pd.DataFrame([[morning_today, morning_price], [afternoon_today, afternoon_price]],
                          columns=['date', 'Average Stock Price'])
-    average_prices = average_prices.append(today, ignore_index = False)
+    average_prices = average_prices.append(today, ignore_index = True)
     seven_day_prices = seven_day_prices.append(average_prices)
     seven_day_prices.to_csv('seven_day_prices.csv')
     return seven_day_prices
@@ -109,13 +110,14 @@ stock_prices.to_csv("google_stocks.csv")
 stock_prices['date'] = (stock_prices['date']).values.astype(dtype='datetime64[ms]')
 stock_prices = Parse_Stock_Prices(stock_prices)
 stock_prices = pd.read_csv('seven_day_prices.csv')
-stock_prices= stock_prices.drop(stock_prices.columns[[0]], axis=1)
+stock_prices.drop(stock_prices.columns[[0]], axis=1, inplace=True)
+stock_prices.to_csv('seven_day_prices.csv')
 times = pd.to_datetime(stock_prices['date'], errors='coerce')
-# print(stock_prices)
+# print(stock_prices
 stock_name = 'GOOGL'
 fig,ax = plt.subplots()
 # # make a plot
-ax.plot(times.dt.to_pydatetime(), stock_prices['Average Stock Price'], color="red", marker="o")
+ax.plot(times, stock_prices['Average Stock Price'], color="red", marker="o")
 # set x-axis label
 ax.set_xlabel("date",fontsize=14)
 # set y-axis label
