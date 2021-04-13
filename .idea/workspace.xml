@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="fb74eae0-e00c-484d-876d-14c1388edd40" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stockjson.py" beforeDir="false" afterPath="$PROJECT_DIR$/stockjson.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/twitter-json.py" beforeDir="false" afterPath="$PROJECT_DIR$/twitter-json.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seven_day_prices.csv" beforeDir="false" afterPath="$PROJECT_DIR$/seven_day_prices.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/twitter-sentiment-analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/twitter-sentiment-analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weighed_tweet_scores.csv" beforeDir="false" afterPath="$PROJECT_DIR$/weighed_tweet_scores.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

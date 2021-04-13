@@ -10,10 +10,12 @@ import datetime
 # CHANGE DATETIME CONSTANTS IN Weigh_Tweets() AND Parse_Stock_Prices()
 def Weigh_Tweets(clean_tweets):
     seven_day_sentiment = pd.read_csv("weighed_tweet_scores.csv")
+    seven_day_sentiment.drop(seven_day_sentiment.columns[[0]], axis=1, inplace=True)
     weighed_tweet_scores = pd.DataFrame(columns=['Date','Average Sentiment'])
     morning_total_followers = 0
     afternoon_total_followers = 0
-    time1 = datetime.time(12, 0, 0)
+    current = datetime.datetime.now()
+    time1 = datetime.time(12, 5, 0)
     times = clean_tweets['time'].dt.time.tolist()
     followers = clean_tweets['follower_count'].values.tolist()
     compound_scores = clean_tweets['compound'].values.tolist()
@@ -29,18 +31,17 @@ def Weigh_Tweets(clean_tweets):
             total_morning_sentiment += compound_scores[i]*followers[i]
         else:
             total_afternoon_sentiment += compound_scores[i]*followers[i]
+    today = pd.DataFrame()
     if morning_total_followers == 0:
-        print("no followers")
         total_morning_sentiment = 0
-    else:
+        total_afternoon_sentiment /= afternoon_total_followers
+        today = pd.DataFrame([[afternoon_today, total_afternoon_sentiment]],
+                             columns=['Date', 'Average Sentiment'])
+    elif afternoon_total_followers == 0:
+        total_afternoon_sentiment = 0
         total_morning_sentiment /= morning_total_followers
-    total_afternoon_sentiment /= afternoon_total_followers
-
-    # CHANGE EVERY TIME YOU RUN TO CURRENT DATE
-    morning = datetime.datetime.now()
-    morning_today = morning.replace(hour=8, minute=0)
-    afternoon_today = morning.replace(hour=14,minute=0)
-    today = pd.DataFrame([[morning_today, total_morning_sentiment], [afternoon_today, total_afternoon_sentiment]], columns=['Date','Average Sentiment'])
+        today = pd.DataFrame([[morning_today, total_morning_sentiment]],
+                             columns=['Date','Average Sentiment'])
     weighed_tweet_scores = weighed_tweet_scores.append(today)
     seven_day_sentiment = seven_day_sentiment.append(weighed_tweet_scores)
     seven_day_sentiment.to_csv('weighed_tweet_scores.csv')
