@@ -37,8 +37,9 @@ def Weigh_Tweets(clean_tweets):
     total_afternoon_sentiment /= afternoon_total_followers
 
     # CHANGE EVERY TIME YOU RUN TO CURRENT DATE
-    morning_today = datetime.datetime(2021, 4, 5, 8, 0, 0)
-    afternoon_today = datetime.datetime(2021, 4, 5, 14, 0, 0)
+    morning = datetime.datetime.now()
+    morning_today = morning.replace(hour=8, minute=0)
+    afternoon_today = morning.replace(hour=14,minute=0)
     today = pd.DataFrame([[morning_today, total_morning_sentiment], [afternoon_today, total_afternoon_sentiment]], columns=['Date','Average Sentiment'])
     weighed_tweet_scores = weighed_tweet_scores.append(today)
     seven_day_sentiment = seven_day_sentiment.append(weighed_tweet_scores)
@@ -70,8 +71,9 @@ def Parse_Stock_Prices(stock_prices):
     average_prices = pd.DataFrame(columns=['date', 'Average Stock Price'])
 
     # CHANGE EVERY TIME YOU RUN TO CURRENT DATE
-    morning_today = datetime.datetime(2021, 4, 6, 0, 0, 0)
-    afternoon_today = datetime.datetime(2021, 4, 6, 12, 0, 0)
+    morning = datetime.datetime.now()
+    morning_today = morning.replace(hour=0, minute=0)
+    afternoon_today = morning.replace(hour=12, minute=0)
     today = pd.DataFrame([[morning_today, morning_price], [afternoon_today, afternoon_price]],
                          columns=['date', 'Average Stock Price'])
     average_prices = average_prices.append(today, ignore_index = False)
@@ -94,8 +96,8 @@ tweet_sentiment["pos"] = scores_df["pos"]
 tweet_sentiment["compound"] = scores_df["compound"]
 tweet_sentiment["time"] = cleaned_tweets['date'].values.astype('datetime64[ns]')
 tweet_sentiment.to_csv(index=False, path_or_buf="tweet_data/hashtag_tweet_sentiment.csv")
-# weighed_tweets = Weigh_Tweets(tweet_sentiment)
-weighed_tweets = pd.read_csv('weighed_tweet_scores.csv')
+weighed_tweets = Weigh_Tweets(tweet_sentiment)
+# weighed_tweets = pd.read_csv('weighed_tweet_scores.csv')
 times2 = pd.to_datetime(weighed_tweets['Date'], errors='coerce')
 print(times2)
 
