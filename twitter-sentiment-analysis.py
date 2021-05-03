@@ -15,6 +15,8 @@ def Weigh_Tweets(clean_tweets):
     morning_total_followers = 0
     afternoon_total_followers = 0
     current = datetime.datetime.now()
+    morning_today = current.replace(hour = 0, minute = 0)
+    afternoon_today = current.replace(hour=13, minute=0)
     time1 = datetime.time(12, 5, 0)
     times = clean_tweets['time'].dt.time.tolist()
     followers = clean_tweets['follower_count'].values.tolist()
@@ -91,7 +93,7 @@ tweet_sentiment = pd.DataFrame()
 tweet_sentiment['tweet'] = cleaned_tweets['text']
 scores = cleaned_tweets['text'].apply(vader.polarity_scores).tolist()
 scores_df = pd.DataFrame(scores)
-# print(scores_df['neu'])
+
 tweet_sentiment["follower_count"] = cleaned_tweets["follower_count"]
 tweet_sentiment["neg"] = scores_df["neg"]
 tweet_sentiment['neu'] = scores_df['neu']
@@ -100,14 +102,12 @@ tweet_sentiment["compound"] = scores_df["compound"]
 tweet_sentiment["time"] = cleaned_tweets['date'].values.astype('datetime64[ns]')
 tweet_sentiment.to_csv(index=False, path_or_buf="tweet_data/hashtag_tweet_sentiment.csv")
 weighed_tweets = Weigh_Tweets(tweet_sentiment)
-# weighed_tweets = pd.read_csv('weighed_tweet_scores.csv')
+
 times2 = pd.to_datetime(weighed_tweets['Date'], errors='coerce')
 print(times2)
 
 stock_prices, symbol = plot_single_stock()
 stock_prices.to_csv("google_stocks.csv")
-# print(stock_prices.columns.values.tolist())
-# stock_prices = pd.read_csv('google_stocks.csv')
 
 stock_prices['date'] = (stock_prices['date']).values.astype(dtype='datetime64[ms]')
 stock_prices = Parse_Stock_Prices(stock_prices)

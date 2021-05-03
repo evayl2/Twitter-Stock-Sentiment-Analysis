@@ -5,30 +5,11 @@ import tweepy
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-# import seaborn as sns
 import string
 import nltk
-from nltk.stem.porter import *
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-from wordcloud import WordCloud
 
-
-## RUN EVERY DAY
 # Store tweets data in a dataframe
 def tweets_df(results):
-    # saved_tweets = pd.read_csv("tweet_data/seven_day_tweets.csv")
-    # id_list = [tweet.id for tweet in results]
-    # data_set = pd.DataFrame(id_list, columns=["id"])
-    # data_set["text"] = [tweet.text for tweet in results]
-    # data_set["Hashtags"] = [tweet.entities['hashtags'] for tweet in results]
-    # data_set["date"] = [tweet.created_at for tweet in results]
-    # data_set["follower_count"] = [tweet.user.followers_count for tweet in results]
-    # saved_tweets = saved_tweets.append(data_set)
-    # filename = "tweet_data/hashtag_scraped_tweets.csv"
-    # saved_tweets.to_csv(filename)
-    # return saved_tweets
-
     id_list = [tweet.id for tweet in results]
     data_set = pd.DataFrame(id_list, columns=["id"])
     data_set["text"] = [tweet.text for tweet in results]
@@ -46,7 +27,6 @@ if __name__ == '__main__':
     auth.set_access_token(twitter["ACCESS_TOKEN"], twitter["ACCESS_TOKEN_SECRET"])
     api = tweepy.API(auth, wait_on_rate_limit=True)  # creating the API object
 
-    # print("Enter Twitter HashTag to search for")
     words = "#google"
 
     # Extracting Tweets
@@ -69,23 +49,6 @@ def get_tweets_from_user(results):
     # we will save our database as a CSV file.
     data_set.to_csv(filename)
     return data_set
-
-
-# if __name__ == '__main__':
-#     # pass in the username of the account you want to download
-#     auth = tweepy.OAuthHandler(twitter["API_KEY"], twitter["API_KEY_SECRET"])  # Interacting with twitter's API
-#     auth.set_access_token(twitter["ACCESS_TOKEN"], twitter["ACCESS_TOKEN_SECRET"])
-#     api = tweepy.API(auth, wait_on_rate_limit=True)  # creating the API object
-#
-#     print("Enter Twitter username to search for")
-#     words = input()
-#
-#     results = []
-#     for tweet in tweepy.Cursor(api.user_timeline,id=words).items(50):
-#         results.append(tweet)
-#
-#     data_set = get_tweets_from_user(results)
-
 
 # Tweet parsing code from https://www.analyticsvidhya.com/blog/2018/07/hands-on-sentiment-analysis-dataset-python/
 
