@@ -18,6 +18,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -25,8 +28,11 @@ jobs:
       - uses: actions/checkout@v2
   
       # Runs a single command using the runners shell
-      - name: execute py script
+      - name: Install dependencies
         run: | 
+            python -m pip install pandas
+            python -m pip install numpy
+            python -m pip install matplotlib
             python twitter-json.py
             python twitter-stock-sentiment-analysis.py
       - name: commit files
