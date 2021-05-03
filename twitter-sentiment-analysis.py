@@ -5,6 +5,8 @@ import string
 import nltk
 from stockjson import *
 import datetime
+nltk.download('vader_lexicon')
+
 
 # RUN EVERY DAY
 # CHANGE DATETIME CONSTANTS IN Weigh_Tweets() AND Parse_Stock_Prices()
