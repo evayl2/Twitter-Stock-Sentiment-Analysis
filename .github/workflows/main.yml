@@ -35,9 +35,7 @@ jobs:
             python -m pip install matplotlib
             python -m pip install requests
             python -m pip install tweepy
-            python -m pip install string
             python -m pip install nltk
-            python -m pip install re
             python twitter-json.py
             python twitter-stock-sentiment-analysis.py
       - name: commit files
