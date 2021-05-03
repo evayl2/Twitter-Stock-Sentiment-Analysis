@@ -5,9 +5,9 @@ name: twitter-sentiment
 # Controls when the action will run. 
 on:
 #   # Triggers the workflow on push or pull request events but only for the main branch
-#   schedule:
-#     - cron: '0 12 * * *' # runs at 12:00 UTC everyday
-#     - cron: '59 23 * * *' # runs at 12:00 UTC everyday
+  schedule:
+    - cron: '0 12 * * *' # runs at 12:00 UTC everyday
+    - cron: '59 23 * * *' # runs at 12:00 UTC everyday
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v2
   
       # Runs a single command using the runners shell
       - name: execute py script
@@ -39,5 +39,5 @@ jobs:
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{secrets.GITHUB_TOKEN }}
           branch: main  
