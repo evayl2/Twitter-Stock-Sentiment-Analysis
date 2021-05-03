@@ -87,7 +87,7 @@ def Parse_Stock_Prices(stock_prices):
     return seven_day_prices
 
 
-cleaned_tweets = pd.read_csv(r"tweet_data\cleaned_hashtag_tweet.csv")
+cleaned_tweets = pd.read_csv("tweet_data/cleaned_hashtag_tweet.csv")
 vader = SentimentIntensityAnalyzer()
 tweet_sentiment = pd.DataFrame()
 tweet_sentiment['tweet'] = cleaned_tweets['text']
