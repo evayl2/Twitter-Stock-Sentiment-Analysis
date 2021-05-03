@@ -37,7 +37,7 @@ jobs:
             python -m pip install tweepy
             python -m pip install nltk
             python twitter-json.py
-            python twitter-stock-sentiment-analysis.py
+            python twitter-sentiment-analysis.py
       - name: commit files
         run: |
           git config --local user.email "evayl2@illinois.edu"
