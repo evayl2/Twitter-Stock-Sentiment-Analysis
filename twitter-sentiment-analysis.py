@@ -131,4 +131,4 @@ ax2=ax.twinx()
 # make a plot with different y-axis using second axis object
 ax2.plot(times2, weighed_tweets["Average Sentiment"],color="blue",marker="o")
 ax2.set_ylabel("Average Sentiment", color="blue", fontsize=14)
-plt.show()
+plt.savefig('price_vs_sentiment.png')
