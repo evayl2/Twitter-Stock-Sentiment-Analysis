@@ -36,6 +36,7 @@ jobs:
             python -m pip install requests
             python -m pip install tweepy
             python -m pip install nltk
+            python -m pip install alpha_vantage
             python twitter-json.py
             python twitter-sentiment-analysis.py
       - name: commit files
